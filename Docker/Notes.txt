@@ -1,0 +1,16 @@
+The files in this directory are all docker-compose orchestration files
+for different occasions.
+
+In preparation to execute the command(s) you must start a terminal session
+in the Docker path.
+The easy way to achieve this is to right-click the Docker folder and request
+a terminal session. This will automagically start the terminal session in
+the Docker path.
+
+The general command to activate such orchestration files is:
+docker compose -f <file-name> up -d --remove-orphans
+
+---
+
+ex:
+docker compose -f .\docker-compose-MSSQL.yml up -d --remove-orphans
