@@ -45,6 +45,39 @@ namespace Cars_Dapper.Pages
 
         public void OnGet()
         {
+            using (var connection = new SqlConnection(System.Environment.GetEnvironmentVariable("ConnectionString")))
+            {
+                string createTable = "CREATE TABLE Cars (licenseplate VARCHAR(16),make VARCHAR(128),model VARCHAR(128),color VARCHAR(128),PRIMARY KEY (licenseplate))";
+                connection.Open();
+                try
+                {
+                    // Return a List<Car>
+                    Cars = connection.Query<Car>("SELECT * FROM dbo.Cars").ToList();
+                    return;
+                }
+                catch
+                {
+                    // It doesn't exist - create and add two cars
+                    connection.Execute(createTable);
+                    connection.ExecuteScalar<Car>("INSERT INTO dbo.Cars (licenseplate,make,model,color) VALUES (@licenseplate, @make, @model, @color)", new
+                    {
+                        licenseplate = "AA 12345",
+                        make = "Toyota",
+                        model = "Yaris",
+                        color = "Silver"
+                    });
+                    connection.ExecuteScalar<Car>("INSERT INTO dbo.Cars (licenseplate,make,model,color) VALUES (@licenseplate, @make, @model, @color)", new
+                    {
+                        licenseplate = "BB 12345",
+                        make = "Ford",
+                        model = "Ka",
+                        color = "Red"
+                    });
+                }
+                // Return a two item List
+                List<Car> cars = connection.Query<Car>("SELECT * FROM dbo.Cars").ToList();
+                Cars = connection.Query<Car>("SELECT * FROM dbo.Cars").ToList();
+            }
         }
     }
 }
