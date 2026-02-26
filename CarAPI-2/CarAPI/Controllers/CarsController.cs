@@ -30,7 +30,7 @@ using Microsoft.Data.SqlClient;
 
 namespace CarAPI.Controllers
 {
-    [Route("apiV1/[controller]")]
+    [Route("apiV2/[controller]")]
     [ApiController]
     public class CarsController : ControllerBase
     {
@@ -78,17 +78,62 @@ namespace CarAPI.Controllers
             }
         }
 
-        // GET api/<CarsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/Cars/cm57812
+        /// <summary>
+        /// Get a car identified by its licenseplate. Note URLEncode(AA 12345): AA%2012345
+        /// </summary>
+        /// <param name="licenseplate"></param>
+        /// <returns>Car</returns>
+        //
+        // Name of method is irrelevant. It is the routing that matters: [HttpGet("{licenseplate}")]
+        [HttpGet("{licenseplate}")]
+        public IActionResult GetByLicenceplate(string licenseplate)
         {
-            return "value";
+            using (var connection = new SqlConnection(System.Environment.GetEnvironmentVariable("ConnectionString")))
+            {
+                connection.Open();
+                try
+                {
+                    return Ok(connection.Query<Car>("SELECT * FROM dbo.Cars WHERE licenseplate='" + licenseplate + "'").FirstOrDefault());
+                }
+                catch
+                {
+                    connection.Execute(createTable);
+                }
+                return Ok(connection.Query<Car>("SELECT * FROM dbo.Cars WHERE licenseplate='" + licenseplate + "'").FirstOrDefault());
+            }
         }
 
         // POST api/<CarsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post(string ilicenseplate, string iMake, string iModel, string iColor)
         {
+            Car car = new()
+            {
+                licenseplate = ilicenseplate,
+                make = iMake,
+                model = iModel,
+                color = iColor
+            };
+            using (var connection = new SqlConnection(System.Environment.GetEnvironmentVariable("ConnectionString")))
+            {
+                connection.Open();
+                try
+                {
+                    return Ok(connection.ExecuteScalar<Car>("INSERT INTO dbo.Cars (licenseplate,make,model,color) VALUES (@licenseplate, @make, @model, @color)", car));
+                }
+                catch
+                {
+                    connection.Execute(createTable);
+                    return Ok(connection.ExecuteScalar<Car>("INSERT INTO dbo.Cars (licenseplate,make,model,color) VALUES (@licenseplate, @Make, @Model, @Color)", new
+                    {
+                        licenseplate = ilicenseplate,
+                        Make = iMake,
+                        Model = iModel,
+                        color = iColor
+                    }));
+                }
+            }
         }
 
         // PUT api/<CarsController>/5
@@ -104,3 +149,4 @@ namespace CarAPI.Controllers
         }
     }
 }
+

@@ -1,0 +1,16 @@
+﻿{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionString": "Data Source=localhost;Initial Catalog=master;User ID=sa;Password=@12tf56so;Encrypt=False;Trust Server Certificate=True"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:8888"
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
+}
