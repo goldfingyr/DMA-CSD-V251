@@ -1,0 +1,52 @@
+﻿@page
+@using UI.Pages
+@model IndexModel
+@Html.AntiForgeryToken()
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="row">
+    <div class="col">
+        <div id="ajax1date"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col"></div>
+    <div class="col">
+        @if (Model.CarSelected != null)
+        {
+            <h3>Selected car</h3>
+            <p>@Model.CarSelected.licenseplate<br />@Model.CarSelected.make<br />@Model.CarSelected.model<br />@Model.CarSelected.color</p>
+        }
+        <h3>Find car</h3>
+        <form method="post">
+            <input type="text" name="target" />
+            <input type="hidden" name="action" value="findCar" />
+            <input type="submit" value="Submit" />
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <h3>Find car by attributes</h3>
+        <form method="post">
+            <input type="hidden" name="action" value="findCarAttributes" />
+            <table>
+                <tr><td>Make</td><td><input type="text" name="make" /></td></tr>
+                <tr><td>Model</td><td><input type="text" name="model" /></td></tr>
+                <tr><td>Color</td><td><input type="text" name="color" /></td></tr>
+            </table>
+            <input type="submit" value="Submit" />
+        </form>
+        @if (Model.Cars != null)
+        {
+            <h3>Cars found</h3>
+            @foreach (var car in Model.Cars)
+            {
+                <p>@car.licenseplate<br />@car.make<br />@car.model<br />@car.color</p>
+            }
+        }
+    </div>
+</div>

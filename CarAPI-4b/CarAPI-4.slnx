@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CarAPI/CarAPI.csproj" />
+  <Project Path="CarUI/CarUI.csproj" />
+</Solution>
